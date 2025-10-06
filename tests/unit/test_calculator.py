@@ -1,109 +1,99 @@
 """
-Unit Tests for Calculator
-Students start with 2 passing tests, then add more
+Unit tests for the calculator module.
+
+This test suite uses pytest's parametrization to efficiently test a wide
+range of inputs and expected outcomes for each calculator function.
 """
 import pytest
-from src.calculator import add, divide, subtract, multiply
+from src.calculator import add, subtract, multiply, divide, power, square_root
 
 class TestBasicOperations:
-    """Test basic arithmetic operations"""
-    
-    def test_add_positive_numbers(self):
-        """Test adding positive numbers"""
-        assert add(2, 3) == 5
-        assert add(10, 15) == 25
-    
-    def test_subtract_positive_numbers(self):
-        """Test subtracting positive numbers"""
-        assert subtract(5, 3) == 2
-        assert subtract(10, 4) == 6
+    """Tests for add and subtract functions."""
 
-class TestMultiplyDivideWithValidation:
-    """Test multiplication and division with input validation."""
-    
-    def test_multiply_input_validation(self):
-        """Test multiply rejects non-numeric inputs."""
+    @pytest.mark.parametrize("a, b, expected", [
+        (2, 3, 5),          # Positive numbers
+        (-1, -1, -2),       # Negative numbers
+        (-5, 3, -2),        # Mixed sign
+        (10, 15, 25),       # Larger numbers
+        (0, 0, 0),          # Zeros
+    ])
+    def test_add(self, a, b, expected):
+        """Test the add function with various inputs."""
+        assert add(a, b) == expected
+
+    @pytest.mark.parametrize("a, b, expected", [
+        (5, 3, 2),          # Positive numbers
+        (-1, -1, 0),        # Negative numbers
+        (-5, -3, -2),       # Mixed sign
+        (10, 4, 6),         # Larger numbers
+        (0, 0, 0),          # Zeros
+    ])
+    def test_subtract(self, a, b, expected):
+        """Test the subtract function with various inputs."""
+        assert subtract(a, b) == expected
+
+class TestMultiplyDivide:
+    """Tests for multiply and divide functions, including validation."""
+
+    @pytest.mark.parametrize("a, b, expected", [
+        (3, 4, 12),         # Positive numbers
+        (5, 0, 0),          # Multiply by zero
+        (-2, 3, -6),        # Mixed sign
+        (-4, -5, 20),       # Negative numbers
+    ])
+    def test_multiply(self, a, b, expected):
+        """Test the multiply function with various numeric inputs."""
+        assert multiply(a, b) == expected
+
+    @pytest.mark.parametrize("a, b, expected", [
+        (10, 2, 5),         # Positive numbers
+        (-10, 2, -5),       # Mixed sign
+        (-12, -3, 4),       # Negative numbers
+    ])
+    def test_divide(self, a, b, expected):
+        """Test the divide function with various numeric inputs."""
+        assert divide(a, b) == expected
+        
+    def test_divide_by_zero_raises_error(self):
+        """Test that dividing by zero raises a ValueError."""
+        with pytest.raises(ValueError, match="Cannot divide 10 by zero."):
+            divide(10, 0)
+
+    @pytest.mark.parametrize("a, b", [("5", 3), (5, "3")])
+    def test_multiply_with_invalid_type_raises_error(self, a, b):
+        """Test that multiply rejects non-numeric inputs."""
         with pytest.raises(TypeError, match="Both arguments must be numbers"):
-            multiply("5", 3)
-        with pytest.raises(TypeError, match="Both arguments must be numbers"):
-            multiply(5, "3")
-    
-    def test_divide_input_validation(self):
-        """Test divide rejects non-numeric inputs."""
+            multiply(a, b)
+            
+    def test_divide_with_invalid_type_raises_error(self):
+        """Test that divide rejects non-numeric inputs."""
         with pytest.raises(TypeError, match="Division requires numeric inputs"):
             divide("10", 2)
 
-#TestBasicOperations
-class TestBasicOperations:
-    """Test basic arithmetic operations"""
-    def test_add_positive_numbers(self):
-        """Test adding positive numbers"""
-        assert add(2, 3) == 5
-        assert add(10, 15) == 25
-
-    def test_subtract_positive_numbers(self):
-        """Test subtracting positive numbers"""
-        assert subtract(5, 3) == 2
-        assert subtract(10, 4) == 6
-
-    # MAKE SURE THESE NEXT TWO FUNCTIONS ARE INDENTED JUST LIKE THE ONES ABOVE
-    def test_add_negative_numbers(self):
-        """Test adding negative numbers"""
-        assert add(-1, -1) == -2
-        assert add(-5, 3) == -2
-
-    def test_subtract_negative_numbers(self):
-        """Test subtracting negative numbers"""
-        assert subtract(-1, -1) == 0
-        assert subtract(-5, -3) == -2
-
-class TestMultiplyDivide:
-    """Test multiplication and division operations"""
-    def test_multiply_positive_numbers(self):
-        """Test multiplying positive numbers"""
-        assert multiply(3, 4) == 12
-        assert multiply(7, 8) == 56
-
-    def test_multiply_by_zero(self):
-        """Test multiplying by zero"""
-        assert multiply(5, 0) == 0
-        assert multiply(0, 10) == 0
-
-    def test_multiply_negative_numbers(self):
-        """Test multiplying negative numbers"""
-        assert multiply(-2, 3) == -6
-        assert multiply(-4, -5) == 20
-
-    def test_divide_positive_numbers(self):
-        """Test dividing positive numbers"""
-        assert divide(10, 2) == 5
-        assert divide(15, 3) == 5
-
-    def test_divide_negative_numbers(self):
-        """Test dividing negative numbers"""
-        assert divide(-10, 2) == -5
-        assert divide(-12, -3) == 4
-
 class TestAdvancedOperations:
-    """Test power and square root operations"""
-    def test_power_positive_numbers(self):
-        """Test power with positive numbers"""
-        assert power(2, 3) == 8
-        assert power(5, 2) == 25
+    """Tests for power and square root functions."""
 
-    def test_power_zero_exponent(self):
-        """Test power with zero exponent"""
-        assert power(5, 0) == 1
-        assert power(0, 0) == 1
+    @pytest.mark.parametrize("base, exp, expected", [
+        (2, 3, 8),          # Positive integers
+        (5, 2, 25),         # Another positive
+        (5, 0, 1),          # Zero exponent
+        (0, 0, 1),          # Zero base and exponent
+    ])
+    def test_power(self, base, exp, expected):
+        """Test the power function with various inputs."""
+        assert power(base, exp) == expected
 
-    def test_square_root_positive_numbers(self):
-        """Test square root of positive numbers"""
-        assert square_root(4) == 2
-        assert square_root(9) == 3
-        assert square_root(16) == 4
-
-    def test_square_root_negative_raises_error(self):
-        """Test that square root of negative raises ValueError"""
-        with pytest.raises(ValueError, match="Cannot calculate square root of negative"):
+    @pytest.mark.parametrize("num, expected", [
+        (4, 2),
+        (9, 3),
+        (16, 4),
+        (0, 0),
+    ])
+    def test_square_root(self, num, expected):
+        """Test the square_root function with valid inputs."""
+        assert square_root(num) == expected
+        
+    def test_square_root_of_negative_raises_error(self):
+        """Test that square root of a negative number raises a ValueError."""
+        with pytest.raises(ValueError, match="Cannot calculate the square root of a negative number."):
             square_root(-4)
-# TODO: Students will add TestMultiplyDivide class

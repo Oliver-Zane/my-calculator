@@ -1,64 +1,97 @@
 """
-Calculator Module - Basic arithmetic operations
-Students will extend this with more functions
+A simple calculator module providing basic and advanced arithmetic operations.
+
+This module includes functions for addition, subtraction, multiplication,
+division, exponentiation, and square roots, with built-in validation
+and error handling.
 """
 
-def add(a, b):
-    """Add two numbers together"""
-    return a + b
+import math
+from typing import Union
 
-def subtract(a, b):
-    """Subtract b from a"""
-    return a - b
+# A type alias for cleaner type hints
+Numeric = Union[int, float]
 
-def multiply(a, b):
-    """Multiply two numbers with input validation and logging."""
+def add(a: Numeric, b: Numeric) -> float:
+    """Adds two numbers together."""
+    return float(a + b)
+
+def subtract(a: Numeric, b: Numeric) -> float:
+    """Subtracts the second number from the first."""
+    return float(a - b)
+
+def multiply(a: Numeric, b: Numeric) -> float:
+    """
+    Multiplies two numbers after validating they are numeric.
+    
+    Raises:
+        TypeError: If either input is not an integer or float.
+    """
     if not isinstance(a, (int, float)) or not isinstance(b, (int, float)):
         raise TypeError("Both arguments must be numbers")
-    
-    print(f"Multiplying {a} × {b}")  # Added logging
-    result = a * b
-    print(f"Result: {result}")
-    return result
+    return float(a * b)
 
-def divide(a, b):
-    """Divide a by b with enhanced error handling."""
+def divide(a: Numeric, b: Numeric) -> float:
+    """
+    Divides the first number by the second with validation.
+    
+    Raises:
+        TypeError: If either input is not an integer or float.
+        ValueError: If the second number (divisor) is zero.
+    """
     if not isinstance(a, (int, float)) or not isinstance(b, (int, float)):
         raise TypeError("Division requires numeric inputs")
     if b == 0:
-        raise ValueError(f"Cannot divide {a} by zero - division by zero is undefined")
+        raise ValueError(f"Cannot divide {a} by zero.")
+    return float(a / b)
+
+def power(a: Numeric, b: Numeric) -> float:
+    """Raises the first number to the power of the second."""
+    return float(a ** b)
+
+def square_root(a: Numeric) -> float:
+    """
+    Calculates the square root of a number.
     
-    print(f"Dividing {a} ÷ {b}")  # Added logging
-    result = a / b
-    print(f"Result: {result}")
-    return result
-
-def multiply(a, b):
-    """Multiply two numbers with input validation."""
-    if not isinstance(a, (int, float)) or not isinstance(b, (int, float)):
-        raise TypeError("Both arguments must be numbers")
-    return a * b
-
-def divide(a, b):
-    """Divide a by b with input validation."""
-    if not isinstance(a, (int, float)) or not isinstance(b, (int, float)):
-        raise TypeError("Division requires numeric inputs")
-    if b == 0:
-        raise ValueError("Cannot divide by zero")
-    return a / b
-
-def power(a, b):
-    """Raise a to the power of b"""
-    return a ** b
-
-def square_root(a):
-    """Calculate square root of a"""
+    Raises:
+        ValueError: If the input number is negative.
+    """
     if a < 0:
-        raise ValueError("Cannot calculate square root of negative number")
-    return a ** 0.5
-# TODO: Students will add multiply, divide, power, sqrt functions
+        raise ValueError("Cannot calculate the square root of a negative number.")
+    return math.sqrt(a)
 
+# This block demonstrates the module's usage when run as a script
 if __name__ == "__main__":
-    print("🧮 Calculator Module")
-    print(f"2 + 3 = {add(2, 3)}")
-    print(f"5 - 2 = {subtract(5, 2)}")
+    print("🧮 Calculator Module Demonstration 🧮")
+    
+    # --- Basic Operations ---
+    print("\n--- Basic Operations ---")
+    print(f"8 + 4 = {add(8, 4)}")
+    print(f"8 - 4 = {subtract(8, 4)}")
+    
+    # --- Advanced Operations ---
+    print("\n--- Advanced Operations ---")
+    print(f"8 * 4 = {multiply(8, 4)}")
+    print(f"8 / 4 = {divide(8, 4)}")
+    print(f"2 to the power of 8 = {power(2, 8)}")
+    print(f"Square root of 64 = {square_root(64)}")
+    
+    # --- Error Handling Demonstration ---
+    print("\n--- Error Handling ---")
+    try:
+        print("Attempting to divide by zero...")
+        divide(10, 0)
+    except ValueError as e:
+        print(f"Caught expected error: {e}")
+
+    try:
+        print("Attempting square root of a negative number...")
+        square_root(-9)
+    except ValueError as e:
+        print(f"Caught expected error: {e}")
+        
+    try:
+        print("Attempting to multiply with a string...")
+        multiply(5, "three")
+    except TypeError as e:
+        print(f"Caught expected error: {e}")
